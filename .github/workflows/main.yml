@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build-debug:
-    name: Build (Debug Config)
+    name: Build (Debug)
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,3 +16,17 @@ jobs:
       uses: warrenbuckley/Setup-MSBuild@v1
     - name: Build with MSBuild
       run: msbuild eaw-dtac.sln -p:Configuration=Debug
+  build-release:
+    if: contains(github.ref, 'master')
+    name: Build (Release)
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup NuGet
+      uses: warrenbuckley/Setup-Nuget@v1
+    - name: Restore Packages
+      run: nuget restore eaw-dtac.sln
+    - name: Setup MSBuild
+      uses: warrenbuckley/Setup-MSBuild@v1
+    - name: Build with MSBuild
+      run: msbuild eaw-dtac.sln -p:Configuration=Release
