@@ -17,6 +17,7 @@ jobs:
       uses: nuget/setup-nuget@v1
       with:
         nuget-version: latest
-      run: nuget restore eaw-dtac.sln
-    - name: Build .NET
-      run: dotnet build --configuration Debug
+    - name: Build .NET      
+    - run: 
+        nuget restore eaw-dtac.sln
+        dotnet build --configuration Debug
