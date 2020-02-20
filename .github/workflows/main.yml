@@ -12,6 +12,11 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-verison: 2.2.108
+        dotnet-version: '2.2.103'
+    - name: Restore NuGet
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: latest
+      run: nuget restore eaw-dtac.sln
     - name: Build .NET
       run: dotnet build --configuration Debug
