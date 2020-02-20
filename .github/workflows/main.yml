@@ -18,6 +18,6 @@ jobs:
       with:
         nuget-version: latest
     - name: Build .NET      
-    - run: 
+      run: 
         nuget restore eaw-dtac.sln
         dotnet build --configuration Debug
