@@ -11,13 +11,7 @@ namespace eaw.dtac.data.damage
                 return false;
             }
 
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                   IsBuiltInType == other.IsBuiltInType;
+            return ReferenceEquals(this, other) || string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj)
@@ -37,11 +31,7 @@ namespace eaw.dtac.data.damage
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return (StringComparer.InvariantCultureIgnoreCase.GetHashCode(Name) * 397) ^
-                       IsBuiltInType.GetHashCode();
-            }
+            return (Name != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(Name) : 0);
         }
 
         public static bool operator ==(DamageType left, DamageType right)
