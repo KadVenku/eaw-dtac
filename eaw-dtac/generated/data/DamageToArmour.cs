@@ -1,8 +1,12 @@
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using eaw.dtac.Annotations;
 
+// ReSharper disable once CheckNamespace
 namespace eaw.dtac.data
 {
-    internal partial class DamageToArmour : IEquatable<DamageToArmour>
+    internal partial class DamageToArmour : IEquatable<DamageToArmour>, INotifyPropertyChanged
     {
         public bool Equals(DamageToArmour other)
         {
@@ -16,7 +20,8 @@ namespace eaw.dtac.data
                 return true;
             }
 
-            return Damage.Equals(other.Damage) && Armour.Equals(other.Armour);
+            return Damage.Equals(other.Damage) && Armour.Equals(other.Armour) &&
+                   DamageToArmourFactor.Equals(other.DamageToArmourFactor);
         }
 
         public override bool Equals(object obj)
@@ -43,7 +48,9 @@ namespace eaw.dtac.data
         {
             unchecked
             {
-                return (Damage.GetHashCode() * 397) ^ Armour.GetHashCode();
+                int hashCode = Damage.GetHashCode();
+                hashCode = (hashCode * 397) ^ Armour.GetHashCode();
+                return hashCode;
             }
         }
 
@@ -59,7 +66,16 @@ namespace eaw.dtac.data
 
         public override string ToString()
         {
-            return $"{nameof(Damage)}: {Damage}, {nameof(Armour)}: {Armour}, {nameof(DamageToArmourFactor)}: {DamageToArmourFactor}";
+            return
+                $"{nameof(Damage)}: {Damage}, {nameof(Armour)}: {Armour}, {nameof(DamageToArmourFactor)}: {DamageToArmourFactor}";
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

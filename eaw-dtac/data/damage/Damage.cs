@@ -1,20 +1,15 @@
-using System;
-using System.Runtime.CompilerServices;
 using eaw.dtac.commons.damage;
-
-[assembly: InternalsVisibleTo("eaw-dtac.test")]
+using System;
 
 namespace eaw.dtac.data.damage
 {
-    internal partial class DamageType
+    internal partial class Damage
     {
         internal string Name { get; }
 
-        internal bool IsBuiltInType =>
-            DamageUtility.EaW.IsBuiltinType(this) ||
-            DamageUtility.FoC.IsBuiltinType(this);
+        internal bool IsBuiltInType => DamageUtility.EaW.IsBuiltinType(this) || DamageUtility.FoC.IsBuiltinType(this);
 
-        internal DamageType(string name)
+        internal Damage(string name)
         {
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
             {

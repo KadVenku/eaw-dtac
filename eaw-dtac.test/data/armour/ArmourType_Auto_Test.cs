@@ -5,14 +5,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace eaw_dtac.test.data.armour
 {
     [TestClass]
-    [TestCategory(TestUtility.TEST_TYPE_AUTO_GENERATED)]
+    [TestCategory(TestUtility.TestType.AUTO_GENERATED)]
     public class ArmourType_Auto_Test
     {
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullArgument()
         {
-            ArmourType armourType1 = new ArmourType(null);
+            Armour armourType1 = new Armour(null);
         }
 
         [TestMethod]
@@ -22,8 +22,8 @@ namespace eaw_dtac.test.data.armour
         [DataRow("TEST2", "Test1", false)]
         public void EqualsComparison(string armourTypeConstructor1, string armourTypeConstructor2, bool expectedResult)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            ArmourType armourType2 = new ArmourType(armourTypeConstructor2);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            Armour armourType2 = new Armour(armourTypeConstructor2);
             Assert.AreEqual(expectedResult, armourType1.Equals(armourType2));
         }
 
@@ -35,8 +35,8 @@ namespace eaw_dtac.test.data.armour
         public void EqualsComparison_ObjectSuccess(string armourTypeConstructor1, string armourTypeConstructor2,
             bool expectedResult)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            object armourType2 = new ArmourType(armourTypeConstructor2);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            object armourType2 = new Armour(armourTypeConstructor2);
             Assert.AreEqual(expectedResult, armourType1.Equals(armourType2));
         }
 
@@ -47,7 +47,7 @@ namespace eaw_dtac.test.data.armour
         [DataRow("TEST2", "Test1")]
         public void EqualsComparison_ObjectFailure(string armourTypeConstructor1, string armourTypeConstructor2)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
             object armourType2 = armourTypeConstructor2;
             Assert.IsFalse(armourType1.Equals(armourType2));
         }
@@ -57,7 +57,7 @@ namespace eaw_dtac.test.data.armour
         [DataRow("Test2")]
         public void EqualsComparison_Null(string armourTypeConstructor1)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
             Assert.IsFalse(armourType1.Equals(null));
         }
 
@@ -66,8 +66,8 @@ namespace eaw_dtac.test.data.armour
         [DataRow("Test2")]
         public void EqualsComparison_Reference(string armourTypeConstructor1)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            ArmourType armourType2 = armourType1;
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            Armour armourType2 = armourType1;
             Assert.IsTrue(armourType1.Equals(armourType2));
         }
 
@@ -76,7 +76,7 @@ namespace eaw_dtac.test.data.armour
         [DataRow("Test2")]
         public void EqualsComparison_ReferenceObject(string armourTypeConstructor1)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
             object armourType2 = armourType1;
             Assert.IsTrue(armourType1.Equals(armourType2));
         }
@@ -89,8 +89,8 @@ namespace eaw_dtac.test.data.armour
         public void GetHashCode(string armourTypeConstructor1, string armourTypeConstructor2,
             bool expectedResult)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            ArmourType armourType2 = new ArmourType(armourTypeConstructor2);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            Armour armourType2 = new Armour(armourTypeConstructor2);
             Assert.AreEqual(expectedResult, armourType1.GetHashCode() == armourType2.GetHashCode());
         }
 
@@ -101,8 +101,8 @@ namespace eaw_dtac.test.data.armour
         [DataRow("TEST2", "Test1", false)]
         public void OpEquality(string armourTypeConstructor1, string armourTypeConstructor2, bool expectedResult)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            ArmourType armourType2 = new ArmourType(armourTypeConstructor2);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            Armour armourType2 = new Armour(armourTypeConstructor2);
             Assert.AreEqual(expectedResult, armourType1 == armourType2);
         }
         [TestMethod]
@@ -112,8 +112,8 @@ namespace eaw_dtac.test.data.armour
         [DataRow("TEST2", "Test1", true)]
         public void OpInequality(string armourTypeConstructor1, string armourTypeConstructor2, bool expectedResult)
         {
-            ArmourType armourType1 = new ArmourType(armourTypeConstructor1);
-            ArmourType armourType2 = new ArmourType(armourTypeConstructor2);
+            Armour armourType1 = new Armour(armourTypeConstructor1);
+            Armour armourType2 = new Armour(armourTypeConstructor2);
             Assert.AreEqual(expectedResult, armourType1 != armourType2);
         }
     }

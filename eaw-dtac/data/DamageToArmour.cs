@@ -1,21 +1,22 @@
-using System.Runtime.CompilerServices;
+using eaw.dtac.Annotations;
 using eaw.dtac.data.armour;
 using eaw.dtac.data.damage;
-
-[assembly: InternalsVisibleTo("eaw-dtac.test")]
+using PropertyChanged;
 
 namespace eaw.dtac.data
 {
     internal partial class DamageToArmour
     {
-        internal DamageType Damage { get; }
-        internal ArmourType Armour { get; }
+        [DoNotNotify]
+        [NotNull] internal Damage Damage { get; }
+        [DoNotNotify]
+        [NotNull] internal Armour Armour { get; }
         internal float DamageToArmourFactor { get; set; }
 
-        internal DamageToArmour(DamageType damage, ArmourType armour, float damageToArmourFactor = 1.0f)
+        internal DamageToArmour(Damage damage, Armour armour, float damageToArmourFactor = 1.0f)
         {
-            Damage = damage;
-            Armour = armour;
+            Damage = damage ?? throw new System.ArgumentNullException(nameof(damage));
+            Armour = armour ?? throw new System.ArgumentNullException(nameof(armour));
             DamageToArmourFactor = damageToArmourFactor;
         }
     }

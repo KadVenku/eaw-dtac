@@ -1,17 +1,19 @@
 using System;
 
+// ReSharper disable once CheckNamespace
 namespace eaw.dtac.data.damage
 {
-    internal partial class DamageType : IEquatable<DamageType>
+    internal partial class Damage : IEquatable<Damage>
     {
-        public bool Equals(DamageType other)
+        public bool Equals(Damage other)
         {
             if (ReferenceEquals(null, other))
             {
                 return false;
             }
 
-            return ReferenceEquals(this, other) || string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
+            return ReferenceEquals(this, other) ||
+                   string.Equals(Name, other.Name, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public override bool Equals(object obj)
@@ -26,7 +28,7 @@ namespace eaw.dtac.data.damage
                 return true;
             }
 
-            return obj.GetType() == typeof(DamageType) && Equals((DamageType) obj);
+            return obj.GetType() == typeof(Damage) && Equals((Damage) obj);
         }
 
         public override int GetHashCode()
@@ -34,12 +36,12 @@ namespace eaw.dtac.data.damage
             return (Name != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(Name) : 0);
         }
 
-        public static bool operator ==(DamageType left, DamageType right)
+        public static bool operator ==(Damage left, Damage right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(DamageType left, DamageType right)
+        public static bool operator !=(Damage left, Damage right)
         {
             return !Equals(left, right);
         }

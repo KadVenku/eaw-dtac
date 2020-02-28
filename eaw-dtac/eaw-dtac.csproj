@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props" Condition="Exists('..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" />
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -36,6 +37,10 @@
     <ItemGroup>
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="mscorlib" />
+        <Reference Include="PropertyChanged, Version=3.2.6.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd">
+          <HintPath>..\packages\PropertyChanged.Fody.3.2.6\lib\net40\PropertyChanged.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
           <HintPath>..\packages\Serilog.2.9.1-dev-01154\lib\net46\Serilog.dll</HintPath>
           <Private>True</Private>
@@ -56,6 +61,7 @@
         <Reference Include="System.Xaml">
             <RequiredTargetFramework>4.0</RequiredTargetFramework>
         </Reference>
+        <Reference Include="System.Xml.Linq" />
         <Reference Include="WindowsBase" />
         <Reference Include="PresentationCore" />
         <Reference Include="PresentationFramework" />
@@ -74,20 +80,33 @@
             <SubType>Code</SubType>
         </Compile>
         <Compile Include="commons\armour\ArmourUtility.cs" />
+        <Compile Include="commons\DamageToArmourUtility.cs" />
         <Compile Include="commons\damage\DamageUtility.cs" />
+        <Compile Include="commons\exceptions\DamageDefinitionException.cs" />
+        <Compile Include="commons\exceptions\DamageToArmourDefinitionException.cs" />
+        <Compile Include="commons\exceptions\DamageToArmourNotFoundExeption.cs" />
+        <Compile Include="commons\exceptions\XmlParseException.cs" />
+        <Compile Include="commons\exceptions\DTATypeNotFoundException.cs" />
+        <Compile Include="commons\GameConstantsUtility.cs" />
+        <Compile Include="commons\game\GameMode.cs" />
         <Compile Include="commons\LogUtility.cs" />
-        <Compile Include="data\armour\ArmourType.cs" />
-        <Compile Include="data\armour\ArmourType_Auto.cs" />
+        <Compile Include="commons\serializable\IXmlElement.cs" />
+        <Compile Include="commons\StringUtility.cs" />
+        <Compile Include="commons\XmlUtility.cs" />
+        <Compile Include="data\armour\Armour.cs" />
         <Compile Include="data\DamageToArmour.cs" />
-        <Compile Include="data\DamageToArmour_Auto.cs" />
-        <Compile Include="data\damage\DamageType.cs" />
-        <Compile Include="data\damage\DamageType_Auto.cs" />
+        <Compile Include="data\damage\Damage.cs" />
+        <Compile Include="data\GlobalStore.cs" />
+        <Compile Include="generated\data\armour\Armour.cs" />
+        <Compile Include="generated\data\DamageToArmour.cs" />
+        <Compile Include="generated\data\damage\Damage.cs" />
         <Compile Include="MainWindow.xaml.cs">
             <DependentUpon>MainWindow.xaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Properties\Annotations.cs" />
         <Compile Include="Properties\AssemblyInfo.cs">
             <SubType>Code</SubType>
         </Compile>
@@ -106,4 +125,12 @@
         <None Include="packages.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Import Project="..\packages\Fody.6.1.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.1.0\build\Fody.targets')" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+      <PropertyGroup>
+        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+      </PropertyGroup>
+      <Error Condition="!Exists('..\packages\Fody.6.1.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.1.0\build\Fody.targets'))" />
+      <Error Condition="!Exists('..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\PropertyChanged.Fody.3.2.6\build\PropertyChanged.Fody.props'))" />
+    </Target>
 </Project>

@@ -1,6 +1,5 @@
-using System.Runtime.CompilerServices;
 using Serilog;
-[assembly: InternalsVisibleTo("eaw-dtac.test")]
+
 namespace eaw.dtac.commons
 {
     internal static class LogUtility
@@ -12,7 +11,6 @@ namespace eaw.dtac.commons
                 .MinimumLevel.Verbose()
                 .WriteTo.Console()
                 .CreateLogger();
-            ;
 #else
             return new LoggerConfiguration()
                 .MinimumLevel.Information()

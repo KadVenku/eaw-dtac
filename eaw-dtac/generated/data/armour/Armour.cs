@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("eaw-dtac.test")]
-
+// ReSharper disable once CheckNamespace
 namespace eaw.dtac.data.armour
 {
-    internal partial class ArmourType : IEquatable<ArmourType>
+    internal partial class Armour : IEquatable<Armour>
     {
-        public bool Equals(ArmourType other)
+        public bool Equals(Armour other)
         {
             if (ReferenceEquals(null, other))
             {
@@ -36,12 +33,12 @@ namespace eaw.dtac.data.armour
                 return true;
             }
 
-            if (obj.GetType() != typeof(ArmourType))
+            if (obj.GetType() != typeof(Armour))
             {
                 return false;
             }
 
-            return Equals((ArmourType) obj);
+            return Equals((Armour) obj);
         }
 
         public override int GetHashCode()
@@ -53,12 +50,12 @@ namespace eaw.dtac.data.armour
             }
         }
 
-        public static bool operator ==(ArmourType left, ArmourType right)
+        public static bool operator ==(Armour left, Armour right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ArmourType left, ArmourType right)
+        public static bool operator !=(Armour left, Armour right)
         {
             return !Equals(left, right);
         }
