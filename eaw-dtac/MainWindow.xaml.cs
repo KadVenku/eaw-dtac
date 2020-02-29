@@ -1,4 +1,10 @@
-﻿namespace eaw.dtac
+﻿using System.Runtime.CompilerServices;
+using eaw.dtac.commons;
+using Serilog;
+
+[assembly: InternalsVisibleTo("eaw-dtac.test")]
+
+namespace eaw.dtac
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -7,6 +13,7 @@
     {
         public MainWindow()
         {
+            Log.Logger = LogUtility.GetLogger();
             InitializeComponent();
         }
     }
