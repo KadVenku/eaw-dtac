@@ -9,7 +9,7 @@ namespace eaw.dtac.commons
     internal static class StringUtility
     {
         [NotNull]
-        internal static List<string> ParseSeparatedStringToList(string s, char separator = ',')
+        internal static List<string> ParseSeparatedStringToList(string s, char separator)
         {
             List<string> list = new List<string>();
             if (IsNullEmptyOrWhiteSpace(s))

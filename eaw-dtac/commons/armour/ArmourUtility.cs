@@ -1,10 +1,16 @@
+using eaw.dtac.Annotations;
+using eaw.dtac.commons.game;
+using eaw.dtac.data;
+using eaw.dtac.data.armour;
+using eaw.dtac.petroglyph.xml.gameconstants;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using eaw.dtac.Annotations;
-using eaw.dtac.data.armour;
-using eaw.dtac.data.damage;
+using System.Text;
+using Serilog;
 
 namespace eaw.dtac.commons.armour
 {
@@ -41,8 +47,7 @@ namespace eaw.dtac.commons.armour
                 }
                 else
                 {
-                    foreach (string sepStr in separatedStringAsList.Where(sepStr =>
-                        !StringUtility.IsNullEmptyOrWhiteSpace(sepStr)))
+                    foreach (string sepStr in separatedStringAsList.Where(sepStr => !StringUtility.IsNullEmptyOrWhiteSpace(sepStr)))
                     {
                         Debug.Assert(sepStr != null, nameof(sepStr) + " != null");
                         armours.Add(new Armour(sepStr.Trim()));
@@ -56,11 +61,10 @@ namespace eaw.dtac.commons.armour
         internal static class EaW
         {
             // ReSharper disable once CollectionNeverUpdated.Local
-            [NotNull] private static readonly List<Armour> ARMOUR_TYPES;
+            [NotNull] private static readonly List<Armour> ARMOUR_TYPES = new List<Armour>();
 
             static EaW()
             {
-                ARMOUR_TYPES = new List<Armour>();
             }
 
             [NotNull]
@@ -88,11 +92,10 @@ namespace eaw.dtac.commons.armour
         internal static class FoC
         {
             // ReSharper disable once CollectionNeverUpdated.Local
-            [NotNull] private static readonly List<Armour> ARMOUR_TYPES;
+            [NotNull] private static readonly List<Armour> ARMOUR_TYPES = new List<Armour>();
 
             static FoC()
             {
-                ARMOUR_TYPES = new List<Armour>();
             }
 
             [NotNull]
@@ -115,6 +118,56 @@ namespace eaw.dtac.commons.armour
 
                 return IsBuiltinType(new Armour(armourTypeId));
             }
+        }
+
+        internal static void CleanArmourDeclaration([NotNull] string gameConstantsFilePath)
+        {
+            if (StringUtility.IsNullEmptyOrWhiteSpace(gameConstantsFilePath) || !File.Exists(gameConstantsFilePath))
+            {
+                throw new ArgumentNullException(nameof(gameConstantsFilePath));
+            }
+
+            XmlUtility.RemoveValueFromTag(gameConstantsFilePath, Tags.ARMOR_TYPES);
+        }
+
+        public static string GetAllAsString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("\n");
+            foreach (Armour damage in GlobalStore.ARMOUR_REGISTRY.Where(damage => damage != null && !damage.IsBuiltInType))
+            {
+                Debug.Assert(damage != null, nameof(commons.damage) + " != null");
+                stringBuilder.Append($"\t\t{damage.Name},\n");
+            }
+
+            switch (GlobalStore.GAME_MODE)
+            {
+                case GameMode.EaW:
+                    foreach (Armour hardCodedType in EaW.GetAllHardCodedTypes())
+                    {
+                        Debug.Assert(hardCodedType != null, nameof(hardCodedType) + " != null");
+                        stringBuilder.Append($"\t\t{hardCodedType.Name},\n");
+                    }
+
+                    break;
+                case GameMode.FoC:
+                    foreach (Armour hardCodedType in FoC.GetAllHardCodedTypes())
+                    {
+                        Debug.Assert(hardCodedType != null, nameof(hardCodedType) + " != null");
+                        stringBuilder.Append($"\t\t{hardCodedType.Name},\n");
+                    }
+
+                    break;
+                case GameMode.Undefined:
+                    Log.Fatal($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                default:
+                    Log.Fatal($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+            }
+
+            stringBuilder.Append("\t");
+            return stringBuilder.ToString();
         }
     }
 }

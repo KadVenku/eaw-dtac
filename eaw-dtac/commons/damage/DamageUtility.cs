@@ -1,9 +1,15 @@
+using eaw.dtac.Annotations;
+using eaw.dtac.commons.game;
+using eaw.dtac.data;
+using eaw.dtac.data.damage;
+using eaw.dtac.petroglyph.xml.gameconstants;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using eaw.dtac.Annotations;
-using eaw.dtac.data.damage;
+using System.Text;
 
 namespace eaw.dtac.commons.damage
 {
@@ -68,31 +74,27 @@ namespace eaw.dtac.commons.damage
             private const string DAMAGE_EAT = "Damage_Eat";
             private const string DAMAGE_REDIRECTED = "Damage_Redirected";
             private const string DAMAGE_WAMPA = "Damage_Wampa";
-            [NotNull] private static readonly List<Damage> DAMAGE_TYPES;
-
-            static EaW()
+            [NotNull]
+            private static readonly List<Damage> DAMAGE_TYPES = new List<Damage>
             {
-                DAMAGE_TYPES = new List<Damage>
-                {
-                    new Damage(DAMAGE_NORMAL),
-                    new Damage(DAMAGE_FORCE_WHIRLWIND),
-                    new Damage(DAMAGE_FORCE_TELEKINESIS),
-                    new Damage(DAMAGE_FORCE_LIGHTNING),
-                    new Damage(DAMAGE_FORCE_CORRUPTION),
-                    new Damage(DAMAGE_HARD_POINT_SELF_DESTRUCT),
-                    new Damage(DAMAGE_FIRE),
-                    new Damage(DAMAGE_CABLE_ATTACK),
-                    new Damage(DAMAGE_EXPLOSION),
-                    new Damage(DAMAGE_ASTEROID),
-                    new Damage(DAMAGE_CABLE_ATTACK_DEPLOYED),
-                    new Damage(DAMAGE_NORMAL_DEPLOYED),
-                    new Damage(DAMAGE_VEHICLE_THIEF),
-                    new Damage(DAMAGE_CRUSH),
-                    new Damage(DAMAGE_EAT),
-                    new Damage(DAMAGE_REDIRECTED),
-                    new Damage(DAMAGE_WAMPA),
-                };
-            }
+                new Damage(DAMAGE_NORMAL),
+                new Damage(DAMAGE_FORCE_WHIRLWIND),
+                new Damage(DAMAGE_FORCE_TELEKINESIS),
+                new Damage(DAMAGE_FORCE_LIGHTNING),
+                new Damage(DAMAGE_FORCE_CORRUPTION),
+                new Damage(DAMAGE_HARD_POINT_SELF_DESTRUCT),
+                new Damage(DAMAGE_FIRE),
+                new Damage(DAMAGE_CABLE_ATTACK),
+                new Damage(DAMAGE_EXPLOSION),
+                new Damage(DAMAGE_ASTEROID),
+                new Damage(DAMAGE_CABLE_ATTACK_DEPLOYED),
+                new Damage(DAMAGE_NORMAL_DEPLOYED),
+                new Damage(DAMAGE_VEHICLE_THIEF),
+                new Damage(DAMAGE_CRUSH),
+                new Damage(DAMAGE_EAT),
+                new Damage(DAMAGE_REDIRECTED),
+                new Damage(DAMAGE_WAMPA),
+            };
 
             [NotNull]
             internal static ReadOnlyCollection<Damage> GetAllHardCodedTypes()
@@ -138,34 +140,30 @@ namespace eaw.dtac.commons.damage
             private const string DAMAGE_INFECTION = "Damage_Infection";
             private const string DAMAGE_REMOTE_BOMB = "Damage_Remote_Bomb";
             private const string DAMAGE_DRAIN_LIFE = "Damage_Drain_Life";
-            [NotNull] private static readonly List<Damage> DAMAGE_TYPES;
-
-            static FoC()
+            [NotNull]
+            private static readonly List<Damage> DAMAGE_TYPES = new List<Damage>
             {
-                DAMAGE_TYPES = new List<Damage>
-                {
-                    new Damage(DAMAGE_NORMAL),
-                    new Damage(DAMAGE_FORCE_WHIRLWIND),
-                    new Damage(DAMAGE_FORCE_TELEKINESIS),
-                    new Damage(DAMAGE_FORCE_LIGHTNING),
-                    new Damage(DAMAGE_FORCE_CORRUPTION),
-                    new Damage(DAMAGE_HARD_POINT_SELF_DESTRUCT),
-                    new Damage(DAMAGE_FIRE),
-                    new Damage(DAMAGE_CABLE_ATTACK),
-                    new Damage(DAMAGE_EXPLOSION),
-                    new Damage(DAMAGE_ASTEROID),
-                    new Damage(DAMAGE_CABLE_ATTACK_DEPLOYED),
-                    new Damage(DAMAGE_NORMAL_DEPLOYED),
-                    new Damage(DAMAGE_VEHICLE_THIEF),
-                    new Damage(DAMAGE_CRUSH),
-                    new Damage(DAMAGE_EAT),
-                    new Damage(DAMAGE_REDIRECTED),
-                    new Damage(DAMAGE_WAMPA),
-                    new Damage(DAMAGE_INFECTION),
-                    new Damage(DAMAGE_REMOTE_BOMB),
-                    new Damage(DAMAGE_DRAIN_LIFE)
-                };
-            }
+                new Damage(DAMAGE_NORMAL),
+                new Damage(DAMAGE_FORCE_WHIRLWIND),
+                new Damage(DAMAGE_FORCE_TELEKINESIS),
+                new Damage(DAMAGE_FORCE_LIGHTNING),
+                new Damage(DAMAGE_FORCE_CORRUPTION),
+                new Damage(DAMAGE_HARD_POINT_SELF_DESTRUCT),
+                new Damage(DAMAGE_FIRE),
+                new Damage(DAMAGE_CABLE_ATTACK),
+                new Damage(DAMAGE_EXPLOSION),
+                new Damage(DAMAGE_ASTEROID),
+                new Damage(DAMAGE_CABLE_ATTACK_DEPLOYED),
+                new Damage(DAMAGE_NORMAL_DEPLOYED),
+                new Damage(DAMAGE_VEHICLE_THIEF),
+                new Damage(DAMAGE_CRUSH),
+                new Damage(DAMAGE_EAT),
+                new Damage(DAMAGE_REDIRECTED),
+                new Damage(DAMAGE_WAMPA),
+                new Damage(DAMAGE_INFECTION),
+                new Damage(DAMAGE_REMOTE_BOMB),
+                new Damage(DAMAGE_DRAIN_LIFE)
+            };
 
             [NotNull]
             internal static ReadOnlyCollection<Damage> GetAllHardCodedTypes()
@@ -187,6 +185,56 @@ namespace eaw.dtac.commons.damage
 
                 return IsBuiltinType(new Damage(damageTypeId));
             }
+        }
+
+        internal static void CleanDamageDeclaration([NotNull] string gameConstantsFilePath)
+        {
+            if (StringUtility.IsNullEmptyOrWhiteSpace(gameConstantsFilePath) || !File.Exists(gameConstantsFilePath))
+            {
+                throw new ArgumentNullException(nameof(gameConstantsFilePath));
+            }
+
+            XmlUtility.RemoveValueFromTag(gameConstantsFilePath, Tags.DAMAGE_TYPES);
+        }
+
+        public static string GetAllAsString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("\n");
+            foreach (Damage damage in GlobalStore.DAMAGE_REGISTRY.Where(damage => damage != null && !damage.IsBuiltInType))
+            {
+                Debug.Assert(damage != null, nameof(commons.damage) + " != null");
+                stringBuilder.Append($"\t\t{damage.Name},\n");
+            }
+            switch (GlobalStore.GAME_MODE)
+            {
+                case GameMode.EaW:
+                    foreach (Damage hardCodedType in EaW.GetAllHardCodedTypes())
+                    {
+                        Debug.Assert(hardCodedType != null, nameof(hardCodedType) + " != null");
+                        stringBuilder.Append($"\t\t{hardCodedType.Name},\n");
+                    }
+                    break;
+                case GameMode.FoC:
+                    foreach (Damage hardCodedType in FoC.GetAllHardCodedTypes())
+                    {
+                        Debug.Assert(hardCodedType != null, nameof(hardCodedType) + " != null");
+                        stringBuilder.Append($"\t\t{hardCodedType.Name},\n");
+                    }
+                    break;
+                case GameMode.Undefined:
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                default:
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+            }
+
+            stringBuilder.Append("\t");
+            return stringBuilder.ToString();
+        }
+
+        public static IEnumerable<Damage> GetAll()
+        {
+            return GlobalStore.DAMAGE_REGISTRY;
         }
     }
 }

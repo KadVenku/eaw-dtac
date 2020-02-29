@@ -123,10 +123,10 @@ namespace eaw_dtac.test.commons
         [TestMethod]
         public void ParseSeparatedStringToList_TestNullOrEmptyString()
         {
-            List<string> l0 = StringUtility.ParseSeparatedStringToList(null);
+            List<string> l0 = StringUtility.ParseSeparatedStringToList(null, ',');
             Assert.IsNotNull(l0);
             Assert.IsTrue(!l0.Any());
-            List<string> l1 = StringUtility.ParseSeparatedStringToList(string.Empty);
+            List<string> l1 = StringUtility.ParseSeparatedStringToList(string.Empty, ',');
             Assert.IsNotNull(l1);
             Assert.IsTrue(!l1.Any());
         }
@@ -134,7 +134,7 @@ namespace eaw_dtac.test.commons
         [TestMethod]
         public void ParseSeparatedStringToList_Test()
         {
-            List<string> l = StringUtility.ParseSeparatedStringToList(TEST_STRING_00);
+            List<string> l = StringUtility.ParseSeparatedStringToList(TEST_STRING_00, ',');
             Assert.IsNotNull(_testList00);
             Assert.IsNotNull(l);
             Assert.AreEqual(_testList00.Count, l.Count);

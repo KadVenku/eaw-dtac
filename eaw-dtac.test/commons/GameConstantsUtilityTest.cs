@@ -18,8 +18,7 @@ namespace eaw_dtac.test.commons
                 File.Delete(TestUtility.TestData.GameConstantsFile.GetFilePath());
             }
 
-            File.WriteAllText(TestUtility.TestData.GameConstantsFile.GetFilePath(),
-                TestUtility.TestData.GameConstantsFile.GetFileContent());
+            File.WriteAllText(TestUtility.TestData.GameConstantsFile.GetFilePath(), TestUtility.TestData.GameConstantsFile.GetFileContent());
         }
 
         [TestCleanup]
@@ -37,6 +36,15 @@ namespace eaw_dtac.test.commons
             GlobalStore.GAME_MODE = GameMode.EaW;
             GameConstantsUtility.LoadFromGameConstantsFile(TestUtility.TestData.GameConstantsFile.GetFilePath());
             Assert.IsTrue(GlobalStore.GAME_CONSTANTS_LOADED);
+        }
+
+        [TestMethod]
+        public void SaveToGameConstantsFile_Test()
+        {
+            GlobalStore.GAME_MODE = GameMode.EaW;
+            GameConstantsUtility.LoadFromGameConstantsFile(TestUtility.TestData.GameConstantsFile.GetFilePath());
+            Assert.IsTrue(GlobalStore.GAME_CONSTANTS_LOADED);
+            GameConstantsUtility.SaveToGameConstantsFile(TestUtility.TestData.GameConstantsFile.GetFilePath(), true);
         }
     }
 }

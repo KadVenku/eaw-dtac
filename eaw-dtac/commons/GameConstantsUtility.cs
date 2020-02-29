@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Xml.Linq;
 using eaw.dtac.Annotations;
 using eaw.dtac.commons.armour;
 using eaw.dtac.commons.damage;
@@ -12,19 +6,18 @@ using eaw.dtac.commons.game;
 using eaw.dtac.data;
 using eaw.dtac.data.armour;
 using eaw.dtac.data.damage;
+using eaw.dtac.petroglyph.xml.gameconstants;
 using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Xml.Linq;
 
 namespace eaw.dtac.commons
 {
     internal static class GameConstantsUtility
     {
-        private static class Tag
-        {
-            internal const string DAMAGE_TYPES = "Damage_Types";
-            internal const string ARMOUR_TYPES = "Armor_Types";
-            internal const string DAMAGE_TO_ARMOR_MOD = "Damage_To_Armor_Mod";
-        }
-
         internal static void LoadFromGameConstantsFile([NotNull] string gameConstantsFilePath)
         {
             if (GlobalStore.GAME_CONSTANTS_LOADED)
@@ -36,6 +29,40 @@ namespace eaw.dtac.commons
             GetAllArmourTypes(gameConstantsFilePath);
             InitializeDamageToArmourMatrix(gameConstantsFilePath);
             GlobalStore.GAME_CONSTANTS_LOADED = true;
+        }
+
+        internal static void SaveToGameConstantsFile([NotNull] string gameConstantsFilePath, bool writeDestructive = false)
+        {
+            if (!writeDestructive)
+            {
+                BackupGameConstantsFile(gameConstantsFilePath);
+            }
+            Debug.Assert(gameConstantsFilePath != null, nameof(gameConstantsFilePath) + " != null");
+            Debug.Assert(File.Exists(gameConstantsFilePath), nameof(gameConstantsFilePath) + " must exist");
+            SaveToGameConstantsFilePrepare(gameConstantsFilePath);
+            SaveToGameConstantsFileInternal(gameConstantsFilePath);
+        }
+
+        private static void SaveToGameConstantsFileInternal([NotNull] string gameConstantsFilePath)
+        {
+            XmlUtility.ReplaceValueForTag(gameConstantsFilePath, Tags.DAMAGE_TYPES, DamageUtility.GetAllAsString());
+            XmlUtility.ReplaceValueForTag(gameConstantsFilePath, Tags.ARMOR_TYPES, ArmourUtility.GetAllAsString());
+            XmlUtility.InsertElement(gameConstantsFilePath, DamageToArmourUtility.ParseDamageToArmourMatrixAsXElement(), Tags.ARMOR_TYPES);
+        }
+
+        private static void SaveToGameConstantsFilePrepare([NotNull] string gameConstantsFilePath)
+        {
+            DamageUtility.CleanDamageDeclaration(gameConstantsFilePath);
+            ArmourUtility.CleanArmourDeclaration(gameConstantsFilePath);
+            DamageToArmourUtility.CleanDamageToArmourDeclaration(gameConstantsFilePath);
+        }
+
+        private static void BackupGameConstantsFile([NotNull] string gameConstantsFilePath)
+        {
+            if (File.Exists(gameConstantsFilePath))
+            {
+                File.Copy(gameConstantsFilePath, gameConstantsFilePath + $".{DateTime.Now:yyyyMMddHHmmssffff}.xml");
+            }
         }
 
         private static void InitializeDamageToArmourMatrix(string gameConstantsFilePath)
@@ -61,7 +88,7 @@ namespace eaw.dtac.commons
             Debug.Assert(gameConstantsFile.Root != null, "gameConstantsFile.Root != null");
             foreach (XElement xElement in gameConstantsFile.Root.Elements())
             {
-                if (!xElement.Name.ToString().Equals(Tag.DAMAGE_TO_ARMOR_MOD, StringComparison.InvariantCultureIgnoreCase))
+                if (!xElement.Name.ToString().Equals(Tags.DAMAGE_TO_ARMOR_MOD, StringComparison.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
@@ -89,7 +116,7 @@ namespace eaw.dtac.commons
             Debug.Assert(gameConstantsFile.Root != null, "gameConstantsFile.Root != null");
             foreach (XElement xElement in gameConstantsFile.Root.Elements())
             {
-                if (!xElement.Name.ToString().Equals(Tag.DAMAGE_TYPES, StringComparison.InvariantCultureIgnoreCase))
+                if (!xElement.Name.ToString().Equals(Tags.DAMAGE_TYPES, StringComparison.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
@@ -123,10 +150,10 @@ namespace eaw.dtac.commons
                     CheckFoCHardcodedDamageTypes();
                     break;
                 case GameMode.Undefined:
-                    Log.Fatal("No Game Mode was set.");
-                    throw new Exception("No Game Mode was set.");
+                    Log.Fatal($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
             }
         }
 
@@ -180,7 +207,7 @@ namespace eaw.dtac.commons
             Debug.Assert(gameConstantsFile.Root != null, "gameConstantsFile.Root != null");
             foreach (XElement xElement in gameConstantsFile.Root.Elements())
             {
-                if (!xElement.Name.ToString().Equals(Tag.ARMOUR_TYPES, StringComparison.InvariantCultureIgnoreCase))
+                if (!xElement.Name.ToString().Equals(Tags.ARMOR_TYPES, StringComparison.InvariantCultureIgnoreCase))
                 {
                     continue;
                 }
@@ -214,10 +241,11 @@ namespace eaw.dtac.commons
                     CheckFoCHardcodedArmourTypes();
                     break;
                 case GameMode.Undefined:
-                    Log.Fatal("No Game Mode was set.");
-                    throw new Exception("No Game Mode was set.");
+                    Log.Fatal($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Log.Fatal($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
+                    throw new ArgumentOutOfRangeException($"No valid Game Mode was set: {GlobalStore.GAME_MODE}");
             }
         }
 
